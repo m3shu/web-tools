@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Open Multiple Link (Meshu)</title>
+
+	<style>
+		textarea{
+			outline: none;
+		}
+
+		a{
+			  background-color: #1D82E2;
+			  color: white;
+			  font-size: 1.4rem;
+			  text-decoration: none;
+			  transition: all 0.5s;
+			  display: block;
+			  margin: 10px 30px;
+			  padding: 10px 20px;
+		}
+
+		a:hover{
+			transform: scale(1.05);
+		}
+
+		a:visited{
+			background-color: #f7003c;			
+		}
+
+
+	</style>
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+</head>
+<body>
+	<center>
+		<p>
+			Paste all url here ↓
+		</p>
+		<textarea id="URL-LIST" rows="10" cols="60">
+
+		</textarea>
+
+		<div>
+			<button id="openLinks" onclick="OpenAllUrl()">Create Link</button>
+			<button onclick="Clear()">Clear</button>		
+			<button onclick="Save()">Save</button>	
+			<button onclick="Load()">Load</button>	
+		</div>
+
+	</center>
+
+	<div id="link-holder">
+		
+	</div>
+
+	<script type="text/javascript">
+
+
+		function OpenAllUrl()
+		{
+			$("#URL-LIST").val($("#URL-LIST").val().trim());
+
+			if($("#URL-LIST").val()!="")
+				$("#URL-LIST").val().split("\n").forEach(link => link!="" && $("#link-holder").append($("<a>").append(link).attr("href",link).attr("target","_blank")))
+			else alert("Please enter links")
+
+		}	
+
+		function Clear()
+		{
+			$("#URL-LIST").val("");
+			$("#URL-LIST").focus();
+		}		
+		Clear();
+
+
+		function Save()
+		{
+			localStorage.setItem("urls",$("#URL-LIST").val());
+			alert("Saved successfully");
+		}
+
+		function Load()
+		{
+			$("#URL-LIST").val(localStorage.getItem("urls"));
+		}
+		
+		
+	</script>
+</body>
+</html>
