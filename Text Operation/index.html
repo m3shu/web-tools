@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Meshu's Text Tools</title>
+    <link rel="stylesheet" href="/Text Operation/common.css" />
+    <link rel="stylesheet" href="/Text Operation/bootstrap.min.css" />
+    <style>
+      html,
+      body {
+        height: 100%;
+        width: 100%;
+      }
+      .w-45 {
+        width: 48%;
+      }
+      input {
+        padding: 5px;
+      }
+      textarea {
+        padding: 5px;
+      }
+      button:hover {
+        background-color: blueviolet;
+        color: #fff;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="p-5 h-100 w-100">
+      <h3>My Text Tools</h3>
+      <input placeholder="add prefix here" id="pre" class="w-45 float-left" />
+      <input placeholder="add sufix here" id="suf" class="w-45 float-right" />
+      <textarea
+        id="in"
+        class="my-3 h-75 mr-3 w-45 float-left"
+        rows="12"
+        placeholder="Input"
+      ></textarea>
+      <textarea
+        id="out"
+        class="my-3 h-75 w-45 float-right"
+        rows="12"
+        placeholder="Output"
+      ></textarea>
+      <button onclick="convert()" title="Shotcut : (Ctrl + Space)">
+        Execute
+      </button>
+      <button onclick="copy()">Copy</button>
+      <button onclick="cls()">Clear</button>
+
+      <div
+        class="float-right text-right ml-3"
+        title="Automatically clear input field after each action"
+      >
+        <input type="checkbox" id="autoClear" />
+        <label for="autoClear">Auto clear</label>
+      </div>
+
+      <div
+        class="float-right text-right ml-3"
+        title="Automatically clear input field after each action"
+      >
+        <input type="checkbox" id="isCommaSeparation" />
+        <label for="isCommaSeparation">Comma Separation</label>
+      </div>
+
+      <div
+        class="float-right text-right ml-3"
+        title="Automatically clear input field after each action"
+      >
+        <input type="checkbox" id="isRD" checked />
+        <label for="isRD">Remove Duplicate</label>
+      </div>
+
+      <div
+        class="float-right text-right"
+        title="Automatically clear input field after each action"
+      >
+        <input type="checkbox" id="isSort" checked />
+        <label for="isSort">Sort</label>
+      </div>
+
+      <div
+        class="alert alert-success text-center mt-3 position-fixed"
+        style="right: 3rem; top: 0; display: none;"
+        id="alert"
+      >
+      ✓ Output Copied Successfully
+      </div>
+    </div>
+    <script src="/Text Operation/jquery.min.js"></script>
+    <script src="/Text Operation/bootstrap.min.js"></script>
+
+    <script>
+      function convert() {
+        var pre = $("#pre").val();
+        var suf = $("#suf").val();
+        var output = $("#in")
+          .val()
+          .split("\n")
+          .filter((x) => x.trim())
+          .map((x) => pre + x.trim() + suf);
+
+        uniq = [];
+        if ($("#isRD").prop("checked")) {
+          output.forEach((x) => {
+            uniq.indexOf(x) === -1 && uniq.push(x);
+          });
+        } else uniq = output;
+
+        if ($("#isSort").prop("checked")) {
+          uniq.sort((a, b) => (a.toLowerCase() > b.toLowerCase() ? 1 : -1));
+        }
+
+        if ($("#isCommaSeparation").prop("checked")) {
+          $("#out").val(uniq.join(", "));
+        } else $("#out").val(uniq.join("\n"));
+
+        copy();
+        autoClear();
+      }
+
+      function copy() {
+        /* Get the text field */
+        var copyText = document.getElementById("out");
+
+        /* Select the text field */
+        copyText.select();
+        copyText.setSelectionRange(0, 99999); /*For mobile devices*/
+
+        /* Copy the text inside the text field */
+        document.execCommand("copy");
+
+        /* Alert the copied text */
+        //alert("Copied the text: " + copyText.value);
+
+        $("#alert").fadeIn();
+        setTimeout((x) => $("#alert").fadeOut(), 2000);
+      }
+
+      function cls() {
+        $("#in").val("");
+        $("#out").val("");
+		document.getElementById("in").focus();
+      }
+
+      function autoClear() {
+        $("#autoClear").prop("checked") && $("#in").val("");
+		document.getElementById("in").focus();
+      }
+
+      //for shortcut key
+      function doc_keyUp(e) {
+        if (e.ctrlKey && e.keyCode == 32) {
+          convert();
+        }
+      }
+      document.addEventListener("keyup", doc_keyUp, false);
+    </script>
+  </body>
+</html>
